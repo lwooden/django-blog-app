@@ -3,8 +3,18 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
+# Custom model manager that performs special queries that fit my needs
+# This manager returns all post filtered by the status "published
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager, self).get_queryset().filter(status='published')
+
+
 # Post Model
 class Post(models.Model):
+    objects = models.Manager()  # define default model manager
+    published = PublishedManager()  # define custom model manager
+
     STATUS_CHOICES = (
         ('draft', 'Draft'),
         ('published', 'Published'),
