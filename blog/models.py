@@ -13,8 +13,6 @@ class PublishedManager(models.Manager):
 
 # Post Model
 class Post(models.Model):
-    objects = models.Manager()  # define default model manager
-    published = PublishedManager()  # define custom model manager
 
     STATUS_CHOICES = (
         ('draft', 'Draft'),
@@ -30,19 +28,25 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
-    # Define Canonical URL for a blog resource (a blog)
-    def get_absolute_url(self):
-        return reverse('blog:post_detail',
-                       args=[self.publish.year,
-                             self.publish.month,
-                             self.publish.day,
-                             self.slug])
+    objects = models.Manager()  # define default model manager
+    published = PublishedManager()  # define custom model manager
+
 
     # Metadata Class
     # Sorts results by the "publish" field in descending order "-"
     class Meta:
         ordering = ('-publish',)
 
-        # Getter method that returns the title of the blog
-        def __str__(self):
-            return self.tite
+    # Getter method that returns the title of the blog
+    def __str__(self):
+        return self.title
+
+    
+    # Define Canonical URL for a blog resource (a blog)
+    def get_absolute_url(self):
+        return reverse('blog:post_detail',
+                    args=[self.publish.year,
+                            self.publish.month,
+                            self.publish.day,
+                            self.slug])
+
